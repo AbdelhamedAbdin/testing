@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+
+{% block title %} response table {% endblock %}
+
+{% block body %}
+    <div class="response mt-3">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="filtering">
+                        <form method="get" action="{% url 'student_grade:student_response_list' %}">
+                            <input type="text" hidden name="filtering" value="{{ request.is_visitor }}">
+                            <!-- First Filter -->
+                            <div class="filter-x">
+                                <div class="select-title">
+                                    Character
+                                </div>
+                                <div class="select-filter">
+                                    <div class="filter-label">Character</div>
+                                    <select name="char">
+                                        <option value="all">any</option>
+                                        {% for character in characters %}
+                                        <option {% if char == character %} selected {% endif %} value="{{ character.id }}">{{ character.character }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="select-filter">
+                                    <div class="filter-label">Regularity</div>
+                                    <select name="reg">
+                                        <option value="all">any</option>
+                                        {% for character in regularity %}
+                                        <option {% if reg == character %} selected {% endif %} value="{{ character }}">{{ character }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="select-filter">
+                                    <div class="filter-label">Complexity</div>
+                                    <select name="complex">
+                                        <option value="all">any</option>
+                                        <option{% if complex == "低" %} selected {% endif %} value="低">低</option>
+                                        <option{% if complex == "高" %} selected {% endif %} value="高">高</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Second Filter -->
+                            <div class="filter-x mt-3">
+                                <div class="select-title">
+                                    Student
+                                </div>
+                                <div class="select-filter">
+                                    <div class="filter-label">Grade</div>
+                                    <select name="grade">
+                                        <option value="all">any</option>
+                                        {% for student in unique_grade %}
+                                        <option {% if student == grade %} selected {% endif %} value="{{ student }}">{{ student }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="select-filter">
+                                    <div class="filter-label">Gender</div>
+                                    <select name="gender">
+                                        <option value="all">any</option>
+                                        <option {% if gender == "女" %} selected {% endif %} value="女">女</option>
+                                        <option {% if gender == "男" %} selected {% endif %} value="男">男</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Third Filter -->
+                            <div class="filter-x mt-3">
+                                <div class="select-title">
+                                    Correct Answer
+                                </div>
+                                <div class="select-filter">
+                                    <div class="filter-label">Correct</div>
+                                    <select name="correct">
+                                        <option value="all">any</option>
+                                        <option {% if correct == "0" %} selected {% endif %} value="0">Correct</option>
+                                        <option {% if correct == "1" %} selected {% endif %} value="1">Error</option>
+                                        <option {% if correct == "2" %} selected {% endif %} value="2">Blank</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Fourth Filter -->
+                            <div class="filter-x mt-3">
+                                <div class="select-title">
+                                    Error Answer
+                                </div>
+                                <div class="select-filter">
+                                    <div class="filter-label">Error class</div>
+                                    <select name="error_class">
+                                        <option value="all">any</option>
+                                        {% for error in error_class %}
+                                            {% if error != None %}
+                                            <option {% if error == err_class %} selected {% endif %} value="{{ error }}">{{ error }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="select-filter">
+                                    <div class="filter-label">Error number</div>
+                                    <select name="error_number">
+                                        <option value="all">any</option>
+                                        {% for error in error_number %}
+                                            {% if error != None %}
+                                            <option {% if error == err_number %} selected {% endif %} value="{{ error }}">{{ error }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="select-filter">
+                                    <div class="filter-label">Error unit</div>
+                                    <select name="error_unit">
+                                        <option value="all">any</option>
+                                        {% for error in error_unit %}
+                                            {% if error != None %}
+                                            <option {% if error == err_unit %} selected {% endif %} value="{{ error }}">{{ error }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="select-filter">
+                                    <div class="filter-label">Error type</div>
+                                    <select name="error_type">
+                                        <option value="all">any</option>
+                                        {% for error in error_type %}
+                                            {% if error != None %}
+                                            <option {% if error == err_type %} selected {% endif %} value="{{ error }}">{{ error }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="select-filter">
+                                    <div class="filter-label">Remark</div>
+                                    <select name="remark">
+                                        <option value="all">any</option>
+                                        {% for error in remark %}
+                                            {% if error != None %}
+                                            <option {% if error == rem %} selected {% endif %} value="{{ error }}">{{ error }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="submit" id="filter_btn" hidden>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-lg-9" style="overflow-x: auto">
+                {% if all_response.paginator.count != 0 %}
+                    <section class="center">
+                        <div class="table__wrapper">
+                            <table id="table_id" class="text-center display table table-striped table-bordered nowrap">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th scope="col">Student</th>
+                                        <th scope="col">Character</th>
+                                        <th scope="col">Regularity</th>
+                                        <th scope="col">Grade</th>
+                                        <th scope="col">Gender</th>
+                                        <th scope="col">Error class</th>
+                                        <th scope="col">Error number</th>
+                                        <th scope="col">Error unit</th>
+                                        <th scope="col">Error type</th>
+                                        <th scope="col">Correct</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="dashboard-history">
+                                    {% for response in all_response %}
+                                    <tr>
+                                        <td data-header="Student">
+                                            {{ response.student.student }}
+                                        </td>
+                                        <td data-header="Character">
+                                            {% if 'char' in request.GET and request.GET.char != 'all' %}
+                                            <strong>{{ response.character.character }}</strong>
+                                            {% else %}
+                                            {{ response.character.character }}
+                                            {% endif %}
+                                        </td>
+                                        <td data-header="Regularity">
+                                            {% if 'reg' in request.GET and request.GET.reg != 'all' %}
+                                            <strong>{{ response.character.regularity }}</strong>
+                                            {% else %}
+                                            {{ response.character.regularity }}
+                                            {% endif %}
+                                        </td>
+                                        <td data-header="Grade">
+                                            {% if 'grade' in request.GET and request.GET.grade != 'all' %}
+                                            <strong>{{ response.student.grade }}</strong>
+                                            {% else %}
+                                            {{ response.student.grade }}
+                                            {% endif %}
+                                        </td>
+                                        <td data-header="Gender">
+                                            {% if 'gender' in request.GET and request.GET.gender != 'all' %}
+                                            <strong>{{ response.student.gender }}</strong>
+                                            {% else %}
+                                            {{ response.student.gender }}
+                                            {% endif %}
+                                        </td>
+                                        <td data-header="Error class">
+                                            {% if response.modifyErrorClass != None %}
+                                                {% if 'error_class' in request.GET and request.GET.error_class != 'all' %}
+                                                <storng>{{ response.modifyErrorClass }}</storng>
+                                                {% else %}
+                                                {{ response.modifyErrorClass }}
+                                                {% endif %}
+                                            {% else %}
+                                                Empty
+                                            {% endif %}
+                                        </td>
+                                        <td data-header="Error number">
+                                            {% if 'error_number' in request.GET and request.GET.error_number != 'all' %}
+                                            <strong>{{ response.modifyErrorNumber }}</strong>
+                                            {% else %}
+                                            {{ response.modifyErrorNumber }}
+                                            {% endif %}
+                                        </td>
+                                        <td data-header="Error unit">
+                                            {% if response.modifyErrorUnit != None %}
+                                                {% if 'error_unit' in request.GET and request.GET.error_unit != 'all' %}
+                                                <strong>{{ response.modifyErrorUnit }}</strong>
+                                                {% else %}
+                                                {{ response.modifyErrorUnit }}
+                                                {% endif %}
+                                            {% else %}
+                                                Empty
+                                            {% endif %}
+                                        </td>
+                                        <td data-header="Error type">
+                                            {% if response.modifyErrorUnit != None %}
+                                                {% if 'error_type' in request.GET and request.GET.error_type != 'all' %}
+                                                <strong>{{ response.modifyErrorUnit }}</strong>
+                                                {% else %}
+                                                    {{ response.modifyErrorUnit }}
+                                                {% endif %}
+                                            {% else %}
+                                                Empty
+                                            {% endif %}
+                                        </td>
+                                        <td data-header="Correct">
+                                            {% if 'correct' in request.GET and request.GET.correct != 'all' %}
+                                            <strong>
+                                                {% if response.correct == 0 %}
+                                                    Correct
+                                                {% elif response.correct == 1 %}
+                                                    Error
+                                                {% else %}
+                                                    Blank
+                                                {% endif %}
+                                            </strong>
+                                            {% else %}
+                                                {% if response.correct == 0 %}
+                                                    Correct
+                                                {% elif response.correct == 1 %}
+                                                    Error
+                                                {% else %}
+                                                    Blank
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                {% else %}
+                    <p>No results were found. Please adjust the search criteria and try again.</p>
+                {% endif %}
+                </div>
+            </div>
+            {% if all_response.paginator.count > 100 %}
+            <div class="paginator-section mt-4">
+                {% include 'student_grade/paginator.html' %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        let select_field = document.querySelectorAll('select');
+        let filter_btn = document.getElementById('filter_btn')
+
+        for (let i = 0; i < select_field.length; i++) {
+            select_field[i].onchange = function () {
+                filter_btn.click();
+            }
+        }
+    </script>
+{% endblock %}

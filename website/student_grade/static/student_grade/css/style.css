@@ -1,0 +1,57 @@
+/* Global */
+body {
+    background-color: #E1E1E1;
+}
+.mt-1 {
+    margin-top: 1rem;
+}
+.mt-2 {
+    margin-top: 2rem;
+}
+.mt-3 {
+    margin-top: 3rem;
+}
+.mt-4 {
+    margin-top: 4rem;
+}
+.mt-5 {
+    margin-top: 5rem;
+}
+.mt-6 {
+    margin-top: 6rem;
+}
+/* response view */
+.table td, .table th {
+    border-top: 0 !important;
+}
+.paginator-section .pagination {
+    justify-content: center;
+}
+.response .table {
+    background-color: #f7fafc;
+    color: #000;
+    border: 1px solid #aaa;
+}
+.response .filter-x {
+    border: 1px solid #cbd5e0;
+}
+.response .select-title {
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #f7fafc;
+    border-bottom: 1px solid #cbd5e0;
+}
+.response .select-filter {
+    padding: 0.75rem;
+}
+.response .select-filter .filter-label {
+    color: #718096;
+    font-size: .9rem;
+}
+.response .select-filter select {
+    background-color: #fff;
+    padding: 0 5px;
+    height: 30px;
+    border: 1px solid #a0aec0;
+    width: 100%;
+}
